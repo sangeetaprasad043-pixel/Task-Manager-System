@@ -1,4 +1,4 @@
-# **Task Management System (Full-Stack Web Application)**
+# **Task Management System**
 
 A professional **Full-Stack Task Management System** developed using **Python (Flask)** and **SQLite**. The application features a dynamic web interface, secure user authentication, and role-based dashboard functionality designed for organizational workflow management.
 
