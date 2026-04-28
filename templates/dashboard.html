@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; padding: 30px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #007bff; color: white; border-radius: 4px; }
+        .btn { padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 13px; color: white; cursor: pointer; border: none; }
+        .btn-add { background: #28a745; }
+        .btn-done { background: #007bff; }
+        .btn-del { background: #dc3545; }
+        .btn-page { background: #6c757d; margin: 2px; }
+        .active-page { background: #007bff !important; }
+        .badge { padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .bg-pending { background: #ffeeba; color: #856404; }
+        .bg-done { background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="header">
+        <h2>Dashboard ({{ current_user.role }})</h2>
+        <div>
+            {% if current_user.role == 'Admin' %} <a href="{{ url_for('new_task') }}" class="btn btn-add">+ New Task</a> {% endif %}
+            <a href="{{ url_for('logout') }}" class="btn" style="background:#333">Logout</a>
+        </div>
+    </div>
+
+    <form method="GET" style="margin-bottom: 20px;">
+        <label>Filter Status: </label>
+        <select name="status" onchange="this.form.submit()" style="padding: 5px; border-radius: 4px;">
+            <option value="All" {{ 'selected' if current_status == 'All' }}>All</option>
+            <option value="Pending" {{ 'selected' if current_status == 'Pending' }}>Pending</option>
+            <option value="Completed" {{ 'selected' if current_status == 'Completed' }}>Completed</option>
+        </select>
+    </form>
+
+    <table>
+        <tr><th>Title</th><th>User</th><th>Status</th><th>Actions</th></tr>
+        {% for task in tasks.items %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.owner.username }}</td>
+            <td><span class="badge {{ 'bg-done' if task.status == 'Completed' else 'bg-pending' }}">{{ task.status }}</span></td>
+            <td>
+                {% if task.status == 'Pending' %} <a href="{{ url_for('complete_task', task_id=task.id) }}" class="btn btn-done">Done</a> {% endif %}
+                {% if current_user.role == 'Admin' %} <a href="{{ url_for('delete_task', task_id=task.id) }}" class="btn btn-del" onclick="return confirm('Delete?')">Delete</a> {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div style="margin-top: 25px; text-align: center;">
+        {% for page_num in tasks.iter_pages() %}
+            {% if page_num %}
+                <a href="{{ url_for('dashboard', page=page_num, status=current_status) }}" class="btn btn-page {{ 'active-page' if page_num == tasks.page }}">{{ page_num }}</a>
+            {% else %} ... {% endif %}
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>

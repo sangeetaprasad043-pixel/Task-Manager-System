@@ -1,0 +1,35 @@
+# --- Python Specific ---
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environment ---
+# We don't upload the library files, only the code
+venv/
+env/
+ENV/
+bin/
+lib/
+include/
+
+# --- Database & Instance ---
+# Ignore the local database so it doesn't overwrite others' data
+instance/
+*.db
+
+# --- Unit Testing ---
+# Ignore testing cache if any
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Operating System Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- IDE Files ---
+.vscode/
+.idea/
+*.swp
